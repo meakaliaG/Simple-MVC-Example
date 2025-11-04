@@ -1,5 +1,13 @@
-module.exports.Cat = require('./Cat.js');
-module.exports.Dog = require('./Dog.js');
+// module.exports.Cat = require('./Cat.js');
+// module.exports.Dog = require('./Dog.js');
+
+const Cat = require('./Cat.js');
+const Dog = require('./Dog.js');
+
+module.exports = {
+  Cat,
+  Dog,
+};
 
 
 // index.js gets automatically pulled when 

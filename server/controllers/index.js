@@ -1,20 +1,27 @@
 // pull in our models. This will automatically load the index.js from that folder
 const models = require('../models');
 
-const { Cat } = models;
-const { Dog } = models;
+const { Cat, Dog } = models;
 
 
 const hostIndex = async (req, res) => {
   let name = 'unknown';
+  let dogName = 'unknown';
+
 
   try{
     const doc = await Cat.findOne({}, {}, {
       sort: {'createdDate': 'descending'}
     }).lean().exec();
+    const doc1 = await Dog.findOne({}, {}, {
+      sort: {'createdDate': 'descending'}
+    }).lean().exec();
 
     if(doc) {
       name = doc.name;
+    }
+    if(doc1) {
+      dogName = doc1.name;
     }
   } catch (err) {
     console.log(err);
@@ -22,6 +29,7 @@ const hostIndex = async (req, res) => {
 
   res.render('index', {
     currentName: name,
+    dogName: dogName,
     title: 'Home',
     pageName: 'Home Page'
   });
@@ -48,10 +56,76 @@ const hostPage3 = async (req, res) => {
     return res.render('page3', {dogs: docs});
   } catch (err) {
     console.log(err);
-    return res.status(500).json({error: 'failed to find cats'});
+    return res.status(500).json({error: 'failed to find dogs'});
   }
 };
 
+// page4: show all dogs
+const hostPage4 = async (req, res) => {
+  try {
+    const docs = await Dog.find({}).lean().exec();
+    return res.render('page4', {dogs: docs});
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({error: 'failed to retrieve dogs'});
+  }
+};
+
+// create new Dog
+const createDog = async (req, res) => {
+  const {name, breed, age} = req.body;
+
+  if (!name || !breed || !age) {
+    return res.status(400).json({error: 'Name, breed, and age are all required'});
+  }
+
+  try {
+    const newDog = new Dog({name, breed, age});
+    await newDog.save();
+
+    return res.status(201).json({
+      name: newDog.name,
+      breed: newDog.breed,
+      age: newDog.age,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({error: 'failed to create dog'});
+  }
+};
+
+// search for dog by name
+const findDogByName = async (req, res) => {
+  const {name} = req.query;
+
+  if (!name) {
+    return res.status(400).json({error: 'name query parameter is required'})
+  }
+
+  try {
+    const updatedDog = await Dog.findOneAndUpdate(
+      {name},
+      {$inc: {age:1}},
+      {new: true, lean: true}
+    ).exec();
+
+    if (!updatedDog) {
+      return res.status(404).json({error: 'Dog not found'});
+    }
+
+    return res.json({
+      message: `${updateDog.name}'s age has been increased by 1`,
+      name: updatedDog.name,
+      breed: updatedDog.breed,
+      age: updatedDog.age,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({error: 'something went wrong updating dog'});
+  }
+};
+
+// search for cat by name
 const getName = async (req, res) => {
   const doc = await Cat.findOne({}).sort({'createdDate': 'descending'}).lean().exec();
 
@@ -67,7 +141,7 @@ const getName = async (req, res) => {
 };
 
 
-
+// create new Cat
 const setName = async (req, res) => {
   if (!req.body.firstname || !req.body.lastname || !req.body.beds) {
     return res.status(400).json({error: 'firstname, lastname, and beds are all required'});
@@ -140,6 +214,9 @@ module.exports = {
   page1: hostPage1,
   page2: hostPage2,
   page3: hostPage3,
+  page4: hostPage4,
+  findDogByName,
+  createDog,
   getName,
   setName,
   updateLast,

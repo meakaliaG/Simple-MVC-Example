@@ -4,14 +4,16 @@
   <title>{{title}}</title>
 </head>
 <body>
-  <h1>Welcome to page 3</h1>
+  <h1>Make a Dog!</h1>
   
   <!-- links or URLs are always GET resources as they are getting (retrieving) a resource -->
   <a href="/">Home</a>
-  <a href="/page1">Page 1</a>
-  <a href="/page2">Page 2</a>
+  <a href="/page1">Cat List</a>
+  <a href="/page2">Make Cat</a>
+  <a href="/page4">Dog List</a>
 
-  <form action="/setName" method="POST">
+
+  <form action="/makeDog" method="POST">
     <label for="name">Name:</label>
     <input type="text" name="name" value="">
     <label for="breed">Breed: </label>
@@ -24,15 +26,7 @@
   <br/>
   <br/>
   
-
-  <form action="/updateLast" method="POST">
-    <input type="submit" value="Update Last">
-  </form>
-  
-  <br/>
-  <br/>
-  
-  <form action="findByName" method="GET">
+  <form action="findDogByName" method="GET">
     <label for="searchName">Name to search for:</label>
     <input type="text" name="searchName" value="">
     <input type="submit" value="Submit">
