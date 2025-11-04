@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-let CatModel = {};
+let DogModel = {};
 
 
-const CatSchema = new mongoose.Schema({
+const DogSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -11,7 +11,13 @@ const CatSchema = new mongoose.Schema({
         unique: true,
     },
 
-    bedsOwned: {
+    breed: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+
+    age: {
         type: Number,
         min: 0,
         required: true,
@@ -23,6 +29,6 @@ const CatSchema = new mongoose.Schema({
     },
 });
 
-CatModel = mongoose.model('Cat', CatSchema);
+DogModel = mongoose.model('Dog', DogSchema);
 
-module.exports = CatModel;
+module.exports = DogModel;
