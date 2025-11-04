@@ -18,7 +18,6 @@ mongoose.connect(dbURI).catch((err) => {
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-
 const app = express();
 
 app.use('/assets', express.static(path.resolve(`${__dirname}/../client/`)));
@@ -43,4 +42,3 @@ app.listen(port, (err) => {
   }
   console.log(`Listening on port ${port}`);
 });
-
